@@ -1,3 +1,79 @@
+# 0.7.2
+
+0.7.2 is a minor release which quickly patches some bugs found in the last
+release to do with Seldon and Mlflow deployment.
+
+This release also features initial versions of two amazing new integrations:
+[HuggingFace](https://huggingface.co/) and [Weights&Biases](https://wandb.ai/site)!
+
+- HuggingFace models are now supported to be passed through ZenML pipelines!
+- You can now track your pipeline runs with Weights&Biases with the new
+`enable_wandb` decorator!
+
+Continuous model deployment with MLflow has been improved with ZenML 0.7.2. A new
+MLflow Model Deployer Stack component is now available and needs to be part of
+your stack to be able to deploy models:
+
+```bash
+zenml integration install mlflow
+zenml model-deployer register mlflow --type=mlflow
+zenml stack register local_with_mlflow -m default -a default -o default -d mlflow
+zenml stack set local_with_mlflow
+```
+
+The MLflow Model Deployer is yet another addition to the list of Model Deployers
+available in ZenML. You can read more on deploying models to production with MLflow
+in our [Continuous Training and Deployment documentation section](https://docs.zenml.io/features/continuous-training-and-deployment) and our [MLflow deployment example](https://github.com/zenml-io/zenml/tree/main/examples/mlflow_deployment).
+
+## What's Changed
+* Fix the seldon deployment example by @htahir1 in https://github.com/zenml-io/zenml/pull/511
+* Create base deployer and refactor MLflow deployer implementation by @wjayesh in https://github.com/zenml-io/zenml/pull/489
+* Add nlp example by @Ankur3107 in https://github.com/zenml-io/zenml/pull/467
+* Fix typos by @strickvl in https://github.com/zenml-io/zenml/pull/515
+* Bugfix/hypothesis given doesnt work with fixture by @jwwwb in https://github.com/zenml-io/zenml/pull/513
+* Bug: fix long Kubernetes labels in Seldon deployments by @stefannica in https://github.com/zenml-io/zenml/pull/514
+* Change prediction_uri to prediction_url in MLflow deployer by @stefannica in https://github.com/zenml-io/zenml/pull/516
+* Simplify HuggingFace Integration by @AlexejPenner in https://github.com/zenml-io/zenml/pull/517
+* Weights & Biases Basic Integration by @htahir1 in https://github.com/zenml-io/zenml/pull/518
+
+## New Contributors
+* @Ankur3107 made their first contribution in https://github.com/zenml-io/zenml/pull/467
+
+**Full Changelog**: https://github.com/zenml-io/zenml/compare/0.7.1...0.7.2
+
+# 0.7.1
+
+The release introduces the [Seldon Core](https://github.com/SeldonIO/seldon-core) ZenML integration, featuring the
+*Seldon Core Model Deployer* and a *Seldon Core standard model deployer step*.
+The [*Model Deployer*](https://docs.zenml.io/core-concepts#model-deployer)
+is a new type of stack component that enables you to develop continuous
+model deployment pipelines that train models and continuously deploy them to an
+external model serving tool, service or platform. You can read more on deploying models
+to production with Seldon Core in our
+[Continuous Training and Deployment documentation section](https://docs.zenml.io/features/continuous-training-and-deployment) and our [Seldon Core deployment example](https://github.com/zenml-io/zenml/tree/main/examples/seldon_deployment).
+
+We also see two new integrations with [Feast](https://feast.dev) as ZenML's first feature store integration. Feature stores allow data teams to serve data via an offline store and an online low-latency store where data is kept in sync between the two. It also offers a centralized registry where features (and feature schemas) are stored for use within a team or wider organization. ZenML now supports connecting to a Redis-backed Feast feature store as a stack component integration. Check out the [full example](https://github.com/zenml-io/zenml/tree/release/0.7.1/examples/feature_store) to see it in action! 
+
+0.7.1 also brings  an addition to ZenML training library integrations with [NeuralProphet](https://neuralprophet.com/html/index.html). Check out the new [example](https://github.com/zenml-io/zenml/tree/main/examples) for more details, and the [docs](https://docs.zenml.io) for more further detail on all new features!
+
+## What's Changed
+* Add linting of examples to `pre-commit` by @strickvl in https://github.com/zenml-io/zenml/pull/490
+* Remove dev-specific entries in `.gitignore` by @strickvl in https://github.com/zenml-io/zenml/pull/488
+* Produce periodic mocked data for Segment/Mixpanel by @AlexejPenner in https://github.com/zenml-io/zenml/pull/487
+* Abstractions for artifact stores by @bcdurak in https://github.com/zenml-io/zenml/pull/474
+* enable and disable cache from runtime config by @AlexejPenner in https://github.com/zenml-io/zenml/pull/492
+* Basic Seldon Core Deployment Service by @stefannica in https://github.com/zenml-io/zenml/pull/495
+* Parallelise our test suite and make errors more readable by @alex-zenml in https://github.com/zenml-io/zenml/pull/378
+* Provision local zenml service by @jwwwb in https://github.com/zenml-io/zenml/pull/496
+* bugfix/optional-secrets-manager by @safoinme in https://github.com/zenml-io/zenml/pull/493
+* Quick fix for copying folders by @bcdurak in https://github.com/zenml-io/zenml/pull/501
+* Pin exact ml-pipelines-sdk version by @schustmi in https://github.com/zenml-io/zenml/pull/506
+* Seldon Core model deployer stack component and standard step by @stefannica in https://github.com/zenml-io/zenml/pull/499
+* Fix datetime test / bug by @strickvl in https://github.com/zenml-io/zenml/pull/507
+* Added NeuralProphet integration by @htahir1 in https://github.com/zenml-io/zenml/pull/504
+* Feature Store (Feast with Redis) by @strickvl in https://github.com/zenml-io/zenml/pull/498
+
+
 # 0.7.0
 
 With ZenML 0.7.0, a lot has been revamped under the hood about how things are stored. Importantly what this means is that ZenML now has [system-wide profiles](https://docs.zenml.io/features/profiles) that let you register stacks to share across several of your projects! If you still want to manage your stacks for each project folder individually, profiles still let you do that as well.
