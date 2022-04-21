@@ -488,3 +488,35 @@ def print_served_model_configuration(
         for component in rich_table.columns[0]._cells
     ]
     console.print(rich_table)
+
+def parse_pipeline_config_parameters(config_parameters: str) -> Dict[str, Any]:
+    """Parses arguments passed directly via CLI while running the pipeline to a dictionary 
+
+    Args:
+        config_parameters: String of arguments passed via CLI while running the pipeline
+
+    Returns:
+        String of arguments passed via CLI in a dict. 
+
+    """
+    config_dict = dict()
+    step_name_dict = dict()
+    step_name = ""
+    step_value = dict()
+    config_parameters_list = config_parameters.split(" ")
+
+    for config_parameter in config_parameters_list:
+        if config_parameter.startswith("--") and "=" not in config_parameter:
+            if step_name != "":
+                step_name_dict[step_name] = {"parameters": step_value}
+                step_name = ""
+                step_value = dict()
+            step_name = config_parameter[2:]
+        else:
+            parameter_key, parameter_value = config_parameter.split("=")
+            step_value[parameter_key[2:]] = parameter_value
+
+    step_name_dict[step_name] = {"parameters": step_value}
+    config_dict["steps"] = step_name_dict
+
+    return config_dict

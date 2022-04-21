@@ -13,7 +13,7 @@
 #  permissions and limitations under the License.
 """CLI to interact with pipelines."""
 import types
-from typing import Any
+from typing import Dict, Any
 
 import click
 
@@ -25,6 +25,7 @@ from zenml.config.config_keys import (
 from zenml.exceptions import PipelineConfigurationError
 from zenml.logger import get_logger
 from zenml.utils import source_utils, yaml_utils
+from zenml.cli.utils import parse_pipeline_config_parameters
 
 logger = get_logger(__name__)
 
@@ -63,18 +64,23 @@ def pipeline() -> None:
     "-c",
     "config_path",
     type=click.Path(exists=True, dir_okay=False),
-    required=True,
+    required=False,
 )
 @click.argument("python_file")
-def run_pipeline(python_file: str, config_path: str) -> None:
-    """Runs pipeline specified by the given config YAML object.
+@click.argument("config_parameters", nargs=-1)
+def run_pipeline(python_file: str, config_path: str, config_parameters) -> None:
+    """Runs pipeline specified by either the given config YAML object or the parameters provided via CLI.
 
     Args:
         python_file: Path to the python file that defines the pipeline.
         config_path: Path to configuration YAML file.
+        config_parameters: List of parameters to pass to the pipeline.
     """
     module = source_utils.import_python_file(python_file)
-    config = yaml_utils.read_yaml(config_path)
+    if config_path:
+        config = yaml_utils.read_yaml(config_path)
+    else:
+        config = parse_pipeline_config_parameters(config_parameters)
     PipelineConfigurationKeys.key_check(config)
 
     pipeline_name = config[PipelineConfigurationKeys.NAME]
